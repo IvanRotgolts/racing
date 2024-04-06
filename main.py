@@ -13,7 +13,7 @@ class Game(arcade.Window):
         self.obstacles = list()
         self.set_up()
         self.current_obstacle_index = 0
-        self.deer = Deer(0, 400, 3, self)
+        self.deer = Deer(600, 600, 3)
 
     def set_up(self):
         for i in range(5):
@@ -66,6 +66,14 @@ class Game(arcade.Window):
     def on_key_release(self, symbol: int, modifiers: int):
         self.car.change_x = 0
         self.car.angle = 0
+
+
+    def change_obstacle_index(self):
+        """изменяет индекс препятсвия"""
+        self.current_obstacle_index += 1
+        #проверяем, что индекс не перешел за недопустимый интервал
+        if self.current_obstacle_index > len(self.obstacles) - 1:
+            self.current_obstacle_index = 0
         
 
 
