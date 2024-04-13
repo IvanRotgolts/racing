@@ -14,6 +14,10 @@ class Game(arcade.Window):
         self.set_up()
         self.current_obstacle_index = 0
         self.deer = Deer(600, 600, 3)
+        self.score = 0
+        self.lives = 3
+        self.stop_game = False
+        self.cant_collide = True
 
     def set_up(self):
         for i in range(5):
@@ -45,11 +49,44 @@ class Game(arcade.Window):
         self.car.draw()
         self.obstacles[self.current_obstacle_index].draw()
         self.deer.draw()
+        #отрисовка очков и жизней
+        arcade.draw_text(f"Score: {self.score}",
+                         50,
+                         50,
+                         (139, 0, 0),
+                         30)
+        arcade.draw_text(f"Lives: {self.lives}",
+                         450,
+                         50,
+                         (139, 0, 0),
+                         30)
 
     def update(self, delta_time):
-        self.car.update()
-        self.obstacles[self.current_obstacle_index].update()
-        self.deer.update()
+        if not self.stop_game:
+            self.car.update()
+            self.obstacles[self.current_obstacle_index].update()
+            self.deer.update()
+
+            collision = any(
+                (
+                    #проверняем на столкновение машины и препятствия
+                    arcade.check_for_collision(self.car, self.obstacles[self.current_obstacle_index]),
+                    arcade.check_for_collision(self.car, self.deer)
+                )
+            )
+
+            if collision and self.cant_collide:
+                self.lives -= 1
+                self.cant_collide = False
+
+            if self.lives <= 0:
+                self.stop_game = True
+
+            if not collision:
+                self.cant_collide = True
+
+        
+        
 
 
     def on_key_press(self, symbol: int, modifiers: int):
