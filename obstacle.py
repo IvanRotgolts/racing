@@ -19,13 +19,21 @@ class Obstacle(arcade.Sprite):
         self.center_x = x
         self.center_y = y
         self.change_y = speed
-        self.window = window
+        self.window = window #Ссылка на объект game
+        
 
     def update(self):
         self.center_y -= self.change_y
         if self.bottom <= 0:
             self.set_position(random.randint(0,SCREEN_WIDTH), SCREEN_HEIGHT - 100)
             self.window.change_obstacle_index()
+
+        if self.bottom <= 0 and self.window.can_add_score:
+            self.window.score += 1
+
+        if self.window.collision:
+            self.set_position(random.randint(0,SCREEN_WIDTH), SCREEN_HEIGHT - 100)
+            
 
     
 class Deer(arcade.Sprite):
@@ -34,6 +42,7 @@ class Deer(arcade.Sprite):
                 x, 
                 y, 
                 speed,
+                window,
                 file_name = BASE_PATH + "//deer.png",
                 ):
         super().__init__(file_name, 0.2)
@@ -41,6 +50,7 @@ class Deer(arcade.Sprite):
         self.center_y = y
         self.change_x = speed
         self.spawn_time = time.time()
+        self.window = window
 
     def update(self):
         self.center_x -= self.change_x
@@ -50,4 +60,10 @@ class Deer(arcade.Sprite):
                 self.spawn_time = time.time()
                 self.center_x = 600
                 self.center_y = 600
+
+        collision = arcade.check_for_collision(self.window.car, self)
+
+        if collision:
+            self.set_position(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100)
+            self.window.lives -= 1
 

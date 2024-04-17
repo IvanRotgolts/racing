@@ -13,13 +13,18 @@ class Game(arcade.Window):
         self.obstacles = list()
         self.set_up()
         self.current_obstacle_index = 0
-        self.deer = Deer(600, 600, 3)
+        self.deer = Deer(600, 600, 3, self)
         self.score = 0
         self.lives = 3
         self.stop_game = False
         self.cant_collide = True
+        self.victory = False
+        self.can_add_score = True
+        self.collision = False
 
+    
     def set_up(self):
+        """Выполняет начальные настройки"""
         for i in range(5):
             self.generate_obsticle()
 
@@ -60,6 +65,22 @@ class Game(arcade.Window):
                          50,
                          (139, 0, 0),
                          30)
+        
+        #Отрисовка победного сообщения
+        self.draw_victory_message()
+        
+    def check_victory(self):
+        if self.score == 10:
+            self.victory = True
+                
+                
+    def draw_victory_message(self):
+        if self.victory:
+            arcade.draw_text("Вы выиграли",
+                         250,
+                         300,
+                         (139, 0, 0),
+                         100)
 
     def update(self, delta_time):
         if not self.stop_game:
@@ -67,7 +88,7 @@ class Game(arcade.Window):
             self.obstacles[self.current_obstacle_index].update()
             self.deer.update()
 
-            collision = any(
+            self.collision = any(
                 (
                     #проверняем на столкновение машины и препятствия
                     arcade.check_for_collision(self.car, self.obstacles[self.current_obstacle_index]),
@@ -75,15 +96,22 @@ class Game(arcade.Window):
                 )
             )
 
-            if collision and self.cant_collide:
+            if self.collision and self.cant_collide:
                 self.lives -= 1
                 self.cant_collide = False
 
             if self.lives <= 0:
                 self.stop_game = True
 
-            if not collision:
+            
+            self.check_victory()
+
+            if self.collision:
+                self.can_add_score = False
+            
+            if not self.collision:
                 self.cant_collide = True
+                self.can_add_score = True
 
         
         
@@ -112,17 +140,6 @@ class Game(arcade.Window):
         if self.current_obstacle_index > len(self.obstacles) - 1:
             self.current_obstacle_index = 0
         
-
-
-
-
-
-
-
-
-
-
-
 
 
 
