@@ -27,8 +27,6 @@ class Obstacle(arcade.Sprite):
         if self.bottom <= 0:
             self.set_position(random.randint(0,SCREEN_WIDTH), SCREEN_HEIGHT - 100)
             self.window.change_obstacle_index()
-
-        if self.bottom <= 0 and self.window.can_add_score:
             self.window.score += 1
 
         if self.window.collision:
@@ -45,7 +43,7 @@ class Deer(arcade.Sprite):
                 window,
                 file_name = BASE_PATH + "//deer.png",
                 ):
-        super().__init__(file_name, 0.2)
+        super().__init__(file_name, 0.1)
         self.center_x = x
         self.center_y = y
         self.change_x = speed

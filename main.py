@@ -77,10 +77,10 @@ class Game(arcade.Window):
     def draw_victory_message(self):
         if self.victory:
             arcade.draw_text("Вы выиграли",
-                         250,
+                         100,
                          300,
                          (139, 0, 0),
-                         100)
+                         50)
 
     def update(self, delta_time):
         if not self.stop_game:
@@ -113,20 +113,26 @@ class Game(arcade.Window):
                 self.cant_collide = True
                 self.can_add_score = True
 
+            if self.score == 10:
+                self.stop_game = True
+
+            
+
         
         
 
 
     def on_key_press(self, symbol: int, modifiers: int):
         #метод работаетс клавиатурой(нажатие клавиш)
-        if symbol == arcade.key.LEFT or symbol == arcade.key.A:
-            self.car.change_x = -CAR_SPEED_X
-            self.car.angle = CAR_ANGLE
+        if not self.stop_game:
+            if symbol == arcade.key.LEFT or symbol == arcade.key.A:
+                self.car.change_x = -CAR_SPEED_X
+                self.car.angle = CAR_ANGLE
 
-        
-        if symbol == arcade.key.RIGHT or symbol == arcade.key.D:
-            self.car.change_x = CAR_SPEED_X
-            self.car.angle = -CAR_ANGLE
+            
+            if symbol == arcade.key.RIGHT or symbol == arcade.key.D:
+                self.car.change_x = CAR_SPEED_X
+                self.car.angle = -CAR_ANGLE
     
     def on_key_release(self, symbol: int, modifiers: int):
         self.car.change_x = 0
